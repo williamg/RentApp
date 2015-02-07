@@ -1,0 +1,42 @@
+extends layout
+
+block content
+  #wrapper
+    #center
+      #content
+        if belongsToUser
+          form
+            input(type="hidden", value=item.id)#id
+            input(value=item.attributes.name)#name
+            input(value=item.attributes.price)#price
+            textarea#description #{item.attributes.description}
+            input(type="submit", value="Update")#submit
+        else
+          h2 #{item.attributes.name}
+          span $#{item.attributes.price} per day
+          span #{email}
+          p #{item.attributes.description}
+
+
+      #image
+        if belongsToUser
+          .small-img
+          .small-img
+          .small-img
+
+          a(href="#") Upload image
+          if item.attributes.rented
+            a(href="#")#check Check in
+          else
+            a(href="#")#check Check out
+          a(href="#")#delete Delete
+        else
+          #img-gallery
+            .img
+            .small-img
+            .small-img
+            .small-img
+
+  script(src="/js/item.js")
+
+

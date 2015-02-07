@@ -1,4 +1,5 @@
 body, html {
+	float: left;
 	width: 100%;
 	height: 100%;
 }
@@ -13,6 +14,7 @@ body {
  */
 a {
   color: #00B7FF;
+  text-decoration: none;
 }
 
 #header {
@@ -144,6 +146,7 @@ a {
 	font-size: 32px;
 	margin-left: 8px;
 	vertical-align: top;
+	text-decoration: none;
 }
 
 /**
@@ -240,3 +243,87 @@ a {
 	line-height: 48px;
 	margin-top: 8px;
 }
+
+/*
+ * ITEM PAGE
+ */
+#content {
+	width: 500px;
+}
+#content h2 {
+	margin-top: 0px;
+	width: 460px;
+}
+
+#content span {
+	display: block;
+	float: left;
+	font-size: 24px;
+	color: #000;
+	width: 460px;
+}
+
+#content p {
+	width: 460px;
+	float: left;
+	font-size: 16px;
+	color: #666;
+	margin-top: 8px;
+}
+
+/*
+ * PROFILE PAGE
+ */
+#sidebar-wrap {
+	float: left;
+	width: 300px;
+	height: 100%;
+	padding-left: 16px;
+}
+
+#sidebar {
+	width: 286px;
+	float: left;
+	margin-top: 16px;
+	background-color: #A02C2C;
+	padding: 8px;
+}
+
+#sidebar h2 {
+	color: #FFF;
+	font-size: 32px;
+	margin-bottom: 8px;
+}
+
+#sidebar span {
+	color: #FFF;
+	font-size: 24px;
+	font-weight: normal;
+	margin: none!important;
+}
+
+.profile-img {
+	width: 286px;
+	height: 286px;
+	background-color: #CCC;
+}
+
+#profile-listings {
+	float: left;
+	width: calc(100% - 332px);
+}
+
+/*
+ * LOGIN/REGISTER
+ */
+#form-center {
+	width: 400px;
+	margin: 16px auto;
+}
+
+#form-center h2 {
+	font-size: 36px;
+	color: #A02C2C;
+	margin-bottom: 8px;
+}
+

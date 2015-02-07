@@ -1,90 +1,168 @@
-var Item = Parse.Object.extend("Item", {
-	initialize: function(attrs, options) {
-		this.name = objName;
-		this.price = objPrice;
-		this.description = objDescription;
-		this.username = user;
-		this.rented = rented;
-	}
-	
-	listItem: function(item) {
-		var item = new Item();
-                item.set("name", name);
-                item.set("price", price);
-                item.set("description", description);
-                item.set("username", user);
-                item.set("rented", rented);
-        	
-        	item.save(null, {
-        		success: function(item) {
-        			// item successfully saved
-        		}
-        		error: function(item, error) {
-        			alert('Failed to add new item, with error code: ' + error.message);
-        		}
-        	});
-	},
-	
- 	checkoutItem: function(itemID) {
- 		
- 	},
- 	
- 	checkinItem: function(itemID) {
- 		
- 	},
- 	
-	getItem: function(searchString) {
-			
-	}
+var parseAPI  = {
+	createUser: function(user) {
+		var userObj = new Parse.User();
+		userObj.set("name", user.name);
+		userObj.set("username", user.email);
+		userObj.set("password", user.password);
+		userObj.set("email", user.email);
 
-	postReview: function(review, itemID) {
-		
-	},
-	
-	getReview: function(itemID) {
-		
-	},
-});
-
-		var user = new Parse.User();
-		user.set("username", user);
-    		user.set("password", password);
-    		user.set("email", email);
-
-    		user.signUp(null, {
+		userObj.signUp(null, {
 			success: function(user) {
-	        	// After user clicks link to confirm
-	        	// Take user to different page
-        		},
-    			error: function(user, error) {
-        			// Show the error message somewhere and let the user try again.
-        			alert("Error: " + error.code + " " + error.message);
-        		}
-    		}
+				document.cookie="userID=" + user.id + "; expires=10000";
+				return user.id;
+			},
+			error: function(user, error) {
+			   alert("Error: " + error.code + " " + error.message);
+			   return undefined;
+			}
+		});
+	},
 	
-		Parse.User.logIn(user, password, {
+	loginUser: function(user, callback) {
+		Parse.User.logIn(user.email, user.password, {
 			success: function(user) {
- 			// Do stuff after successful login.
-        		// Take user to different page
-        		},
-    			error: function(user, error) {
-        			// The login failed. Check error to see why.
-        		}
+				console.log(user.id);
+				document.cookie="userID=" + user.id + "; expires=10000";
+				callback(user.id);
+			},
+			error: function(user, error) {
+				alert("Error: " + error.code + " " + error.message);
+				callback(undefined);
+			}
+		});
+	},
+
+	getUserEmail: function(userID, callback) {
+		var query = new Parse.Query(Parse.User);
+		query.get(userID, {
+			success: function(user) {
+				callback(user.attributes.email);
+			},
+			error: function(user, error) {
+				alert("Error: " + error.code + " " + error.message);
+				callback(undefined);
+			}
+		});
+	},
+
+	listItem: function(item, callback) {
+		var Item = Parse.Object.extend("Item");
+		var itemObj = new Item();
+
+		itemObj.set("name", item.name);
+		itemObj.set("namelist", item.name.toLowerCase().split(" "));
+		itemObj.set("price", item.price);
+		itemObj.set("description", item.description);
+		itemObj.set("user", item.user);
+		itemObj.set("rented", false);
+
+		itemObj.save(null, {
+			success: function(item) {
+				callback(item.id);
+			},
+			error: function(item, error) {
+				alert("Error: " + error.code + " " + error.message);
+				callback(undefined);
+			},
+		});
+	},
+
+	toggleCheckout: function(itemID, callback) {
+		this.getItem(itemID, function(itemObj) {
+			itemObj.set("rented", !itemObj.attributes.rented);
+			itemObj.save();
+
+			callback();
+		});
+	},
+
+	itemsOfUser: function(userID, callback) {
+		var Item = Parse.Object.extend("Item");
+		var ItemCollection = Parse.Collection.extend({
+			model: Item,
+			query: (new Parse.Query(Item)).equalTo("user", userID)
+		});
+		var items = new ItemCollection();
+		items.fetch({
+			success: function(collection) {
+				callback(collection.models);
+			 },
+			error: function(collection, error) {
+				alert("Error: " + error.code + " " + error.message);
+				callback(undefined);
+			}
+		});
+	},
+
+	getItem: function(itemID, callback) {
+		var Item = Parse.Object.extend("Item");
+		var query = new Parse.Query(Item);
+		query.get(itemID, {
+			success: function(item) {
+				callback(item);
+			},
+			error: function(item) {
+				alert("Error: " + error.code + " " + error.message);
+				callback(undefined);
+			}
+		});
+	},
+
+	updateItem: function(item) {
+		this.getItem(item.id, function(itemObj) {
+			itemObj.set("name", item.name);
+			itemObj.set("price", item.price);
+			itemObj.set("description", item.description);
+			itemObj.save();
+		});
+	},
+
+	deleteItem: function(itemID) {
+		this.getItem(itemID, function(itemObj) {
+			itemObj.destroy({
+				success: function() {},
+				error: function() {
+					alert("Error: " + error.code + " " + error.message);
+					callback(undefined);
+
+				}
+			});
+		});
+	},
+
+	getListings: function(searchQuery, callback) {
+		var Item = Parse.Object.extend("Item");
+		var items;
+		if(searchQuery === undefined) {
+			var AllItems = Parse.Collection.extend({
+				model: Item,
+				query: (new Parse.Query(Item).equalTo("rented", "false");
+			});
+			items = new AllItems();
+		} else {
+			var MatchingItems = Parse.Collection.extend({
+				model: Item,
+				query: (new Parse.Query(Item).containsAll("namelist", searchQuery.split(" ")).equalTo("rented", "false")
+			});
+			items = new MatchingItems();
 		}
 
-function testObject() {
-	var TestObject = Parse.Object.extend("TestObject");
-	var testObject = new TestObject();
-	testObject.save({foo: "bar"}).then(function(object) {
-	});
+		items.fetch({
+			success: function(collection) {
+				callback(collection.models);
+			},
+			error: function(collection, error) {
+				alert("Error: " + error.code + " " + error.message);
+				callback(undefined);
+			}
+		});
+	},
+
 }
 
-function testUser() {
-	var user = new User();
-	user.save({user: "student"}).then(function(object) {
-	});
+if(typeof window === 'undefined') {
+	Parse = require("parse").Parse;
+	module.exports = parseAPI;
 }
 
 Parse.initialize("Tn3zdIeNZveir6giGyxWoMmW4PK2KGOk1tsZYg5D", "SEOr0YmRGbxa4dTqn5ifEXn5my5Uz2KWAJ2J9wG2");
-testObject();
-testUser();

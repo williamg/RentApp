@@ -1,0 +1,19 @@
+extends layout
+
+block content
+
+  #sidebar-wrap
+    #sidebar
+      .profile-img
+      h2 John Doe
+      span.email example@email.com
+
+  #profile-listings
+    each item in items
+      .listing
+        .img
+        .details
+          span.name #{item.attributes.name}
+          span.price $#{item.attributes.price}
+        a(href="/item?id="+item.id) >
+

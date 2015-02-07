@@ -1,44 +1,13 @@
 extends layout
 
 block content
-  #header
-    #title
-      h1 SiteName
-
-    #navigation
-      #search
-        input
-        button Search
-      #buttons
-        a List
-        a Profile
-
-
   #listings
-    .listing
-      .img
-      .details
-        span.name Chair
-        span.price $5
-      a >
+    each listing in listings
+      .listing
+        .img
+        .details
+          span.name #{listing.attributes.name}
+          span.price $#{listing.attributes.price}
+        a(href="/item?id=" + listing.id) >
 
-    .listing
-      .img
-      .details
-        span.name Chair
-        span.price $5
-      a >
-
-    .listing
-      .img
-      .details
-        span.name Chair
-        span.price $5
-      a >
-
-    .listing
-      .img
-      .details
-        span.name Chair
-        span.price $5
-      a >
+    script(src="/js/index.js")

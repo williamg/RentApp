@@ -4,5 +4,6 @@
  */
 
 exports.index = function(req, res){
-  res.render('list', { title: 'Express' });
+	var userID = req.cookies.userID;
+  res.render('list', { title: 'List an Item', userID: userID });
 };

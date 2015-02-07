@@ -1,26 +1,14 @@
 extends layout
 
 block content
-  #header
-    #title
-      h1 SiteName
-
-    #navigation
-      #search
-        input
-        button Search
-      #buttons
-        a List
-        a Profile
-
   #wrapper
     #center
       h2 List an Item to Rent
       #content
         form
-          input(value="Name")
-          input(value="Price per day")
-          textarea Describe the item...
+          input(value="Name")#name
+          input(value="Price per day")#price
+          textarea#description Describe the item...
           input(type="submit")#submit List!
 
       #image
@@ -30,4 +18,4 @@ block content
 
         a Upload image
 
-
+  script(src="/js/list.js")

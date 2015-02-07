@@ -1,9 +1,5 @@
 var form = document.getElementsByTagName("form")[0];
 
-function sendConfirmationEmail(user, userID) {
-		
-}
-
 form.onsubmit = function(e) {
 	e.preventDefault();
 	
@@ -25,8 +21,5 @@ form.onsubmit = function(e) {
 
 	// createUser should return the ID of the newly created user
 	var userID = parseAPI.createUser(user);
-	sendConfrimationEmail(user, userID);
-
-	console.log(user);
 }
 

@@ -1,0 +1,15 @@
+extends simpleLayout
+
+block content
+  #wrapper
+    #form-center
+      #content
+          h2 Register for SITE NAME
+          form
+            input(value="John Doe")#name
+            input(value="jdoe@andrew.cmu.edu")#email
+            input(value="password", type="password")#password
+            input(value="password", type="password")#confirm
+            input(type="submit")#submit Register
+
+  script(src="/js/register.js")
