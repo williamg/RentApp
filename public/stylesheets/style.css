@@ -48,7 +48,7 @@ a {
 #search {
 	float: left;
 	height: 100%;
-	width: calc(100% - 340px);
+	width: calc(100% - 448px);
 	border-right: 1px solid #FFF;
 }
 
@@ -76,7 +76,7 @@ a {
 }
 
 #buttons {
-	width: 332px;
+	width: 440px;
 	height: 100%;
 	float: left;
 }

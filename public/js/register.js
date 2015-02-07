@@ -30,7 +30,7 @@ form.onsubmit = function(e) {
 		// createUser should return the ID of the newly created user
 		var userID = parseAPI.createUser(user, function() {
 			var expiry = new Date();
-			expire = (expiry.getTime() + 1000000);
+			expire = (expiry.getTime() + 10*24*60*60*1000);
 			document.cookie="userID=" + user.id + "; expires=" + expiry.toUTCString();
 			location="/confirm";
 		});

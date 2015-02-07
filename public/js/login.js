@@ -16,7 +16,7 @@ form.onsubmit = function(e) {
 
 		if(userID) {
 			var expiry = new Date();
-			expiry.setTime(expiry.getTime() + 1000000);
+			expiry.setTime(expiry.getTime() + 10*24*60*60*1000);
 			document.cookie="userID=" + userID + "; expires=" + expiry.toUTCString();
 			console.log(document.cookie);
 
