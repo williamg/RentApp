@@ -12,10 +12,8 @@ block content
           input(type="submit")#submit List!
 
       #image
-        .small-img
-        .small-img
-        .small-img
-
-        a Upload image
+        form
+          input(type="file")#file
+          input(type="submit", value="Upload")#upload
 
   script(src="/js/list.js")

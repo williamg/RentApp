@@ -14,8 +14,14 @@ form.onsubmit = function(e) {
 	var userID = parseAPI.loginUser(user, function(userID) {
 		console.log(userID);
 
-		if(userID)
+		if(userID) {
+			var expiry = new Date();
+			expiry.setTime(expiry.getTime() + 1000000);
+			document.cookie="userID=" + userID + "; expires=" + expiry.toUTCString();
+			console.log(document.cookie);
+
 			window.location = "/";
+		}
 	});
 }
 

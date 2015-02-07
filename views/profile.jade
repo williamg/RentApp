@@ -4,16 +4,16 @@ block content
 
   #sidebar-wrap
     #sidebar
-      .profile-img
-      h2 John Doe
-      span.email example@email.com
+      img(src=user.attributes.photo.url())
+      h2 #{user.attributes.name}
+      span.email #{user.attributes.email}
 
   #profile-listings
     each item in items
       .listing
-        .img
+        img(src=item.attributes.image.url())
         .details
-          span.name #{item.attributes.name}
+          span.name
+            a(href="/item?id=" + item.id) #{item.attributes.name}
           span.price $#{item.attributes.price}
-        a(href="/item?id="+item.id) >
 

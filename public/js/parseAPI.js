@@ -1,19 +1,19 @@
 var parseAPI  = {
-	createUser: function(user) {
+	createUser: function(user, callback) {
 		var userObj = new Parse.User();
 		userObj.set("name", user.name);
 		userObj.set("username", user.email);
 		userObj.set("password", user.password);
 		userObj.set("email", user.email);
+		userObj.set("photo", user.photo);
 
 		userObj.signUp(null, {
 			success: function(user) {
-				document.cookie="userID=" + user.id + "; expires=10000";
-				return user.id;
+				callback();
 			},
 			error: function(user, error) {
-			   alert("Error: " + error.code + " " + error.message);
-			   return undefined;
+			   console.log("Error: " + error.code + " " + error.message);
+			   callback();
 			}
 		});
 	},
@@ -21,12 +21,23 @@ var parseAPI  = {
 	loginUser: function(user, callback) {
 		Parse.User.logIn(user.email, user.password, {
 			success: function(user) {
-				console.log(user.id);
-				document.cookie="userID=" + user.id + "; expires=10000";
 				callback(user.id);
 			},
 			error: function(user, error) {
-				alert("Error: " + error.code + " " + error.message);
+				console.log("Error: " + error.code + " " + error.message);
+				callback(undefined);
+			}
+		});
+	},
+
+	getUser: function(userID, callback) {
+		var query = new Parse.Query(Parse.User);
+		query.get(userID, {
+			success: function(user) {
+				callback(user);
+			},
+			error: function(user, error) {
+				console.log("Error: " + error.code + " " + error.message);
 				callback(undefined);
 			}
 		});
@@ -39,7 +50,54 @@ var parseAPI  = {
 				callback(user.attributes.email);
 			},
 			error: function(user, error) {
-				alert("Error: " + error.code + " " + error.message);
+				console.log("Error: " + error.code + " " + error.message);
+				callback(undefined);
+			}
+		});
+	},
+
+	getUserName: function(userID, callback) {
+		var query = new Parse.Query(Parse.User);
+		query.get(userID, {
+			success: function(user) {
+				callback(user.attributes.name);
+			},
+			error: function(user, error) {
+				console.log("Error: " + error.code + " " + error.message);
+				callback(undefined);
+			}
+		});
+	},
+
+	postReview: function(itemID, review, callback) {
+		var Review = Parse.Object.extend("Review");
+		var reviewObj = new Review();
+		reviewObj.set("item", itemID);
+		reviewObj.set("content", review);
+		reviewObj.save(null, {
+			success: function() {
+				callback();
+			},
+			error: function(review, error) {
+				console.log("Error: " + error.code + " " + error.message);
+				callback(undefined);
+			}
+		});
+	},
+
+	getReviews: function(itemID, callback) {
+		var Review = Parse.Object.extend("Review");
+		var ReviewCollection = Parse.Collection.extend({
+			model: Review,
+			query: (new Parse.Query(Review)).equalTo("item", itemID)
+		});
+		var reviews = new ReviewCollection();
+		reviews.fetch({
+			success: function(collection) {
+				callback(collection.models);
+			 },
+			error: function(collection, error) {
+				console.log("Error: " + error.code + " " + error.message);
 				callback(undefined);
 			}
 		});
@@ -54,6 +112,7 @@ var parseAPI  = {
 		itemObj.set("price", item.price);
 		itemObj.set("description", item.description);
 		itemObj.set("user", item.user);
+		itemObj.set("image", item.image);
 		itemObj.set("rented", false);
 
 		itemObj.save(null, {
@@ -61,7 +120,7 @@ var parseAPI  = {
 				callback(item.id);
 			},
 			error: function(item, error) {
-				alert("Error: " + error.code + " " + error.message);
+				console.log("Error: " + error.code + " " + error.message);
 				callback(undefined);
 			},
 		});
@@ -88,7 +147,7 @@ var parseAPI  = {
 				callback(collection.models);
 			 },
 			error: function(collection, error) {
-				alert("Error: " + error.code + " " + error.message);
+				console.log("Error: " + error.code + " " + error.message);
 				callback(undefined);
 			}
 		});
@@ -101,8 +160,8 @@ var parseAPI  = {
 			success: function(item) {
 				callback(item);
 			},
-			error: function(item) {
-				alert("Error: " + error.code + " " + error.message);
+			error: function(item, error) {
+				console.log("Error: " + error.code + " " + error.message);
 				callback(undefined);
 			}
 		});
@@ -113,6 +172,10 @@ var parseAPI  = {
 			itemObj.set("name", item.name);
 			itemObj.set("price", item.price);
 			itemObj.set("description", item.description);
+
+			if(item.image !== undefined)
+				itemObj.set("image", item.image);
+
 			itemObj.save();
 		});
 	},
@@ -122,7 +185,7 @@ var parseAPI  = {
 			itemObj.destroy({
 				success: function() {},
 				error: function() {
-					alert("Error: " + error.code + " " + error.message);
+					console.log("Error: " + error.code + " " + error.message);
 					callback(undefined);
 
 				}
@@ -136,13 +199,13 @@ var parseAPI  = {
 		if(searchQuery === undefined) {
 			var AllItems = Parse.Collection.extend({
 				model: Item,
-				query: (new Parse.Query(Item).equalTo("rented", "false");
+				query: (new Parse.Query(Item).equalTo("rented", false))
 			});
 			items = new AllItems();
 		} else {
 			var MatchingItems = Parse.Collection.extend({
 				model: Item,
-				query: (new Parse.Query(Item).containsAll("namelist", searchQuery.split(" ")).equalTo("rented", "false")
+				query: (new Parse.Query(Item).containsAll("namelist", searchQuery.split(" ")).equalTo("rented", false))
 			});
 			items = new MatchingItems();
 		}
@@ -152,11 +215,21 @@ var parseAPI  = {
 				callback(collection.models);
 			},
 			error: function(collection, error) {
-				alert("Error: " + error.code + " " + error.message);
+				console.log("Error: " + error.code + " " + error.message);
 				callback(undefined);
 			}
 		});
 	},
+
+	uploadImage: function(file, name, callback) {
+		var photo = new Parse.File(name, file);
+		photo.save().then(function() {
+			callback(photo);
+		}, function(error) {
+			console.log("Error: " + error.code + " " + error.message);
+			callback(undefined);
+		});
+	}
 
 }
 

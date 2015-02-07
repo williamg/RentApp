@@ -9,7 +9,8 @@ html
   body
     #header
       #title
-        h1 SiteName
+        h1
+          a(href="/") ShareIt!
 
       #navigation
         #search
@@ -18,5 +19,6 @@ html
         #buttons
           a(href="/list") List
           a(href="/profile?id="+userID) Profile
+          a(href="#")#logout Logout
 
     block content

@@ -4,10 +4,10 @@ block content
   #listings
     each listing in listings
       .listing
-        .img
+        img(src=listing.attributes.image.url())
         .details
-          span.name #{listing.attributes.name}
+          span.name 
+            a(href="/item?id=" + listing.id) #{listing.attributes.name}
           span.price $#{listing.attributes.price}
-        a(href="/item?id=" + listing.id) >
 
     script(src="/js/index.js")

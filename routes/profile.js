@@ -8,8 +8,9 @@ exports.index = function(req, res){
   parseAPI.itemsOfUser(userID, function(collection) {
 	if(collection == undefined)
 		return;
-
-	console.log(collection);
-	res.render('profile', { title: "Profile", items: collection, userID: userID});
-  });
+	
+	parseAPI.getUser(userID, function(user) {
+			res.render('profile', { title: "Profile", items: collection, user: user,  userID: userID});
+		});
+	});
 };

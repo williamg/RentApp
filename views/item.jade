@@ -3,7 +3,7 @@ extends layout
 block content
   #wrapper
     #center
-      #content
+      div(data-id=item.id)#content
         if belongsToUser
           form
             input(type="hidden", value=item.id)#id
@@ -17,25 +17,32 @@ block content
           span #{email}
           p #{item.attributes.description}
 
+          h3 Leave a review!
+          textarea Tell the world what you think!
+          a(href="#")#review Review!
+
+          h3 Reviews of #{item.attributes.name}
+          each review in reviews
+            .review
+              span #{review.createdAt}
+              p #{review.attributes.content}
+
 
       #image
         if belongsToUser
-          .small-img
-          .small-img
-          .small-img
+          img(src=item.attributes.image.url())
 
-          a(href="#") Upload image
+          form
+            input(type="file")#file
+            input(type="submit", value="Upload")#upload
+
           if item.attributes.rented
             a(href="#")#check Check in
           else
             a(href="#")#check Check out
           a(href="#")#delete Delete
         else
-          #img-gallery
-            .img
-            .small-img
-            .small-img
-            .small-img
+          img(src=item.attributes.image.url())
 
   script(src="/js/item.js")
 

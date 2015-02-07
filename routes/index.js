@@ -5,9 +5,22 @@ var parseAPI = require("../public/js/parseAPI.js");
 
 exports.index = function(req, res){
 	var searchQuery = req.query.query;
-	console.log(searchQuery);
-	var listings = parseAPI.getListings(searchQuery, function(listings) {
+	parseAPI.getListings(searchQuery, function(listings) {
+		if(listings === undefined) {
+			res.redirect("/login");
+			return;
+		}
 		var userID = req.cookies.userID;
-		res.render('index', { title: 'SITE NAME', userID: userID, listings: listings });
+		console.log(userID);
+		parseAPI.getUser(userID, function(user) {
+			if(user === undefined || !user.attributes.emailVerified) {
+				res.redirect("/login");
+				return;
+			}
+
+			res.render('index', { title: 'ShareIt!', userID: userID, listings: listings });
+
+		});
+
 	});
 };

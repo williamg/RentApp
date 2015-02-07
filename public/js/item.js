@@ -1,9 +1,16 @@
 window.onload = function() {
 
+	// SUCH HACKY VERY BAD
+	if(document.getElementsByTagName("form").length > 0) {
 	var form = document.getElementsByTagName("form")[0];
 	var del = document.getElementById("delete");
 	var id = document.getElementById("id").value;
 	var check = document.getElementById("check");
+	var photoFile = undefined;
+
+	var imageForm = document.getElementsByTagName("form")[1];
+	var upload = document.getElementById("upload");
+
 
 	form.onsubmit = function(e) {
 		e.preventDefault();
@@ -16,7 +23,8 @@ window.onload = function() {
 			id: id,
 			name: name,
 			price: price,
-			description: description
+			description: description,
+			image: photoFile
 		};
 
 		parseAPI.updateItem(item);
@@ -26,7 +34,7 @@ window.onload = function() {
 	del.onclick = function() {
 		parseAPI.deleteItem(id);
 		location = "/";
-	}
+	};
 
 	check.onclick = function() {
 		parseAPI.toggleCheckout(id, function() {
@@ -36,6 +44,34 @@ window.onload = function() {
 			else check.innerHTML = "Check out";
 
 		});
+	};
+
+	upload.onclick = function(e) {
+		e.preventDefault();
+
+		var fileSelect = document.getElementById("file");
+		var file = fileSelect.files[0];
+		var name = "listPhoto." + (fileSelect.value.split("."))[1];
+
+		parseAPI.uploadImage(file, name, function(parseFile) {
+			photoFile = parseFile;
+
+			var img = document.getElementsByTagName("img")[0];
+			img.src = photoFile.url();
+
+		});
+	};
+
+	} else {
+		var reviewBtn = document.getElementById("review");
+
+		reviewBtn.onclick = function() {
+			var review = document.getElementsByTagName("textarea")[0].value
+			var itemID = document.getElementById("content").getAttribute("data-id");
+			parseAPI.postReview(itemID, review, function() {
+				location.reload();
+			});
+		};
 	}
 
 };

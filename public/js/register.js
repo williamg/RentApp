@@ -7,19 +7,34 @@ form.onsubmit = function(e) {
 	var email = document.getElementById("email").value;
 	var password = document.getElementById("password").value;
 	var passwordConfirm = document.getElementById("confirm").value;
+	var photo = document.getElementById("profpic");
 
 	if (password != passwordConfirm) {
 		alert("Passwords don't match!");
 		return;
 	}
 
-	var user = {
-		name: name,
-		email: email,
-		password: password
-	};
+	var file = photo.files[0];
+	var fname = "listPhoto." + (photo.value.split("."))[1];
+	var photoFile;
 
-	// createUser should return the ID of the newly created user
-	var userID = parseAPI.createUser(user);
+	parseAPI.uploadImage(file, fname, function(parseFile) {
+
+		var user = {
+			name: name,
+			email: email,
+			password: password,
+			photo: parseFile
+		};
+
+		// createUser should return the ID of the newly created user
+		var userID = parseAPI.createUser(user, function() {
+			var expiry = new Date();
+			expire = (expiry.getTime() + 1000000);
+			document.cookie="userID=" + user.id + "; expires=" + expiry.toUTCString();
+			location="/confirm";
+		});
+
+	});
 }
 
