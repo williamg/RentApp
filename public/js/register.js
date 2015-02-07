@@ -14,6 +14,11 @@ form.onsubmit = function(e) {
 		return;
 	}
 
+	if(email.indexOf(".cmu.edu") < 0) {
+		alert("Sorry, you must use a CMU email address.");
+		return;
+	}
+
 	var file = photo.files[0];
 	var fname = "listPhoto." + (photo.value.split("."))[1];
 	var photoFile;
